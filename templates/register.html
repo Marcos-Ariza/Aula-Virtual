@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<h2>Register</h2>
+<form method="POST" action="{{ url_for('register') }}">
+    {{ form.hidden_tag() }}  <!-- Para el manejo de CSRF -->
+    <div>
+        <label for="username">Username</label>
+        {{ form.username(size=32, class='form-control') }}
+        {% if form.username.errors %}
+            <ul>
+                {% for error in form.username.errors %}
+                    <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    <div>
+        <label for="password">Password</label>
+        {{ form.password(size=32, class='form-control') }}
+        {% if form.password.errors %}
+            <ul>
+                {% for error in form.password.errors %}
+                    <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    <div>
+        <label for="confirm_password">Confirm Password</label>
+        {{ form.confirm_password(size=32, class='form-control') }}
+        {% if form.confirm_password.errors %}
+            <ul>
+                {% for error in form.confirm_password.errors %}
+                    <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    <div>
+        {{ form.submit(class='btn btn-primary') }}
+    </div>
+</form>
+{% endblock %}
