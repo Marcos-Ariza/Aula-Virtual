@@ -6,47 +6,33 @@ body {
     background-color: #f4f4f4;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;  /* Para asegurar que el body ocupe al menos toda la altura de la ventana */
+    min-height: 100vh;
+    overflow-x: hidden;  /* Evita la barra de desplazamiento horizontal */
 }
 
 /* Estilo del encabezado */
 header {
-    background: #007BFF;
+    background: #00ffff;
     color: white;
-    padding: 15px 0;
+    padding: 15px;  /* Asegúrate de que este padding sea suficiente */
     text-align: center;
-    position: fixed;  /* Fija el header en la parte superior */
-    top: 0;          /* Alinea el header en la parte superior */
-    left: 0;         /* Alinea el header a la izquierda */
-    right: 0;        /* Alinea el header a la derecha */
-    z-index: 1000;   /* Asegura que el header esté por encima de otros elementos */
-}
-
-/* Estilo de navegación */
-nav {
-    margin: 10px 0;
-}
-
-nav a {
-    margin: 0 15px;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-nav a:hover {
-    text-decoration: underline;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
 }
 
 /* Estilo del contenido principal */
 main {
     padding: 20px;
     background-color: white;
-    margin: 70px auto;  /* Añadir margen superior para evitar que el contenido se superponga al header */
-    max-width: 800px;
+    margin: 120px auto;  /* Ajustar este margen si es necesario */
+    max-width: 90%;
+    width: 100%;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    flex: 1; /* Permite que el main ocupe el espacio restante entre el header y el footer */
+    flex: 1;
 }
 
 /* Estilo del pie de página */
@@ -54,6 +40,28 @@ footer {
     background: #f1f1f1;
     text-align: center;
     padding: 10px;
-    position: relative;  /* Permite que el footer se mantenga al final del contenido */
     width: 100%;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 768px) {
+    header {
+        padding: 10px;
+    }
+
+    main {
+        margin: 100px auto; /* Ajustar margen superior en pantallas más pequeñas */
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 10px; /* Ajustar para pantallas muy pequeñas */
+    }
+
+    main {
+        margin: 80px auto; /* Ajustar margen superior para pantallas pequeñas */
+        padding: 10px;
+    }
 }
