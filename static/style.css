@@ -48,7 +48,7 @@ header .nav-links a {
 }
 
 header .nav-links a:hover {
-    color: #4cd137; /* Cambia de color en hover */
+    color: #00aaff; /* Cambia de color en hover */
     text-decoration: none; /* Elimina el subrayado */
 }
 
