@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import RegistrationForm, LoginForm  # Asegúrate de tener LoginForm importado
+from forms import RegistrationForm, LoginForm
 import os
 
 # Inicialización de la aplicación Flask
@@ -31,7 +31,7 @@ def load_user(user_id):
 # Rutas
 @app.route('/')
 def home():
-    return render_template('home.html')  # Cambia esto según tu plantilla de inicio
+    return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -59,14 +59,25 @@ def register():
         if existing_user:
             flash('El nombre de usuario ya está en uso. Elige otro.', 'danger')
         else:
-            password = generate_password_hash(form.password.data, method='sha256')
+            password = generate_password_hash(form.password.data)
             new_user = User(username=username, password=password)
-            db.session.add(new_user)
-            db.session.commit()
-            flash('¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.', 'success')
-            return redirect(url_for('login'))
+            try:
+                db.session.add(new_user)
+                db.session.commit()
+                flash('¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.', 'success')
+                return redirect(url_for('login'))
+            except Exception as e:
+                db.session.rollback()
+                flash('Ocurrió un error al crear la cuenta.', 'danger')
     
     return render_template('register.html', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Has cerrado sesión.', 'success')
+    return redirect(url_for('home'))
 
 # Ejecutar la aplicación
 if __name__ == "__main__":

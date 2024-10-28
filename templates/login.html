@@ -4,6 +4,17 @@
 
 {% block content %}
 <h2>Login</h2>
+
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <ul class="flashed-messages">
+        {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
 <form method="POST" action="{{ url_for('login') }}">
     {{ form.hidden_tag() }}  <!-- Para el manejo de CSRF -->
     <div>
@@ -32,4 +43,7 @@
         {{ form.submit(class='btn btn-primary') }}
     </div>
 </form>
+
+<p><a href="{{ url_for('reset_password') }}">¿Olvidaste tu contraseña?</a></p>
+
 {% endblock %}

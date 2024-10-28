@@ -6,9 +6,10 @@
 <h2>Register</h2>
 <form method="POST" action="{{ url_for('register') }}">
     {{ form.hidden_tag() }}  <!-- Para el manejo de CSRF -->
+    
     <div>
         <label for="username">Username</label>
-        {{ form.username(size=32, class='form-control') }}
+        {{ form.username(size=32, class='form-control', id='username') }}
         {% if form.username.errors %}
             <ul>
                 {% for error in form.username.errors %}
@@ -17,9 +18,10 @@
             </ul>
         {% endif %}
     </div>
+    
     <div>
         <label for="password">Password</label>
-        {{ form.password(size=32, class='form-control') }}
+        {{ form.password(size=32, class='form-control', id='password') }}
         {% if form.password.errors %}
             <ul>
                 {% for error in form.password.errors %}
@@ -28,9 +30,10 @@
             </ul>
         {% endif %}
     </div>
+    
     <div>
         <label for="confirm_password">Confirm Password</label>
-        {{ form.confirm_password(size=32, class='form-control') }}
+        {{ form.confirm_password(size=32, class='form-control', id='confirm_password') }}
         {% if form.confirm_password.errors %}
             <ul>
                 {% for error in form.confirm_password.errors %}
@@ -39,8 +42,9 @@
             </ul>
         {% endif %}
     </div>
+    
     <div>
-        {{ form.submit(class='btn btn-primary') }}
+        {{ form.submit(class='btn btn-primary', value='Register') }}  <!-- Cambiado el texto del botón -->
     </div>
 </form>
 {% endblock %}
