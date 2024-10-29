@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Clases{% endblock %}
+
+{% block content %}
+    <h2>Lista de Clases</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for clase in clases %}
+                <tr>
+                    <td>{{ clase.nombre }}</td>
+                    <td>{{ clase.codigo }}</td>
+                    <td>{{ clase.descripcion }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_class', id=clase.id) }}">Editar</a>
+                        <a href="{{ url_for('delete_class', id=clase.id) }}">Eliminar</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">No hay clases registradas.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('create_class') }}">Crear Nueva Clase</a>
+{% endblock %}

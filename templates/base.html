@@ -18,6 +18,8 @@
         <nav class="nav-links">
             <a href="{{ url_for('home') }}"><i class="fas fa-home"></i> Home</a>
             {% if current_user.is_authenticated %}
+                <a href="{{ url_for('classes') }}"><i class="fas fa-chalkboard-teacher"></i> Clases</a>
+                <a href="{{ url_for('create_class') }}"><i class="fas fa-plus-circle"></i> Crear Clase</a>
                 <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
             {% else %}
                 <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>

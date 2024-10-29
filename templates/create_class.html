@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Clase{% endblock %}
+
+{% block content %}
+    <h2>Crear Nueva Clase</h2>
+    <form action="{{ url_for('create_class') }}" method="POST">
+        <div>
+            <label for="nombre">Nombre de la Clase:</label>
+            <input type="text" id="nombre" name="nombre" required>
+        </div>
+        <div>
+            <label for="codigo">Código de la Clase:</label>
+            <input type="text" id="codigo" name="codigo" required>
+        </div>
+        <div>
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+        </div>
+        <div>
+            <button type="submit">Crear Clase</button>
+        </div>
+    </form>
+    <a href="{{ url_for('classes') }}">Volver a la lista de clases</a>
+{% endblock %}

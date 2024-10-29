@@ -1,27 +1,38 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
+from wtforms import StringField, DateField, SubmitField, SelectField
+from wtforms.validators import DataRequired, Email, Length
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', 
-                           validators=[DataRequired(message='Este campo es obligatorio.'),
-                                       Length(min=2, max=20, 
-                                              message='El nombre de usuario debe tener entre 2 y 20 caracteres.')])
+    nombre = StringField('Nombre', 
+                         validators=[DataRequired(message='Este campo es obligatorio.'),
+                                     Length(min=2, max=150, 
+                                            message='El nombre debe tener entre 2 y 150 caracteres.')])
     
-    password = PasswordField('Password', 
-                             validators=[DataRequired(message='Este campo es obligatorio.')])
+    dni = StringField('DNI', 
+                      validators=[DataRequired(message='Este campo es obligatorio.'),
+                                  Length(min=7, max=20, 
+                                         message='El DNI debe tener entre 7 y 20 caracteres.')])
     
-    confirm_password = PasswordField('Confirm Password', 
-                                      validators=[DataRequired(message='Este campo es obligatorio.'),
-                                                  EqualTo('password', message='Las contraseñas deben coincidir.')])
+    email = StringField('Correo Electrónico', 
+                        validators=[DataRequired(message='Este campo es obligatorio.'),
+                                    Email(message='Ingresa un correo electrónico válido.')])
     
-    submit = SubmitField('Register')
+    nacimiento = DateField('Fecha de Nacimiento', 
+                           validators=[DataRequired(message='Este campo es obligatorio.')],
+                           format='%Y-%m-%d')
+    
+    rol = SelectField('Rol', 
+                      choices=[('maestro', 'Maestro'), ('alumno', 'Alumno')],
+                      validators=[DataRequired(message='Este campo es obligatorio.')])
+    
+    submit = SubmitField('Registrar')
 
-class LoginForm(FlaskForm):
-    username = StringField('Username', 
-                           validators=[DataRequired(message='Este campo es obligatorio.')])
+class ClassForm(FlaskForm):
+    nombre = StringField('Nombre de la Clase', 
+                         validators=[DataRequired(message='Este campo es obligatorio.'),
+                                     Length(min=2, max=100, message='El nombre debe tener entre 2 y 100 caracteres.')])
     
-    password = PasswordField('Password', 
-                             validators=[DataRequired(message='Este campo es obligatorio.')])
+    descripcion = TextAreaField('Descripción', 
+                                 validators=[Length(max=250, message='La descripción no debe exceder 250 caracteres.')])
     
-    submit = SubmitField('Login')
+    submit = SubmitField('Crear Clase')

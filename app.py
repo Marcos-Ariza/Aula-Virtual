@@ -1,83 +1,79 @@
 from flask import Flask, redirect, url_for, request, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
-from forms import RegistrationForm, LoginForm
-import os
+from flask_login import LoginManager, current_user, login_required
+from forms import RegistrationForm, ClassForm  # Importa el nuevo formulario ClassForm
+from models import db, Persona, Clase  # Asegúrate de importar el nuevo modelo Clase
+from config import Config
 
 # Inicialización de la aplicación Flask
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'seZu8xMTVvnxb5IrTtkO'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://uc35dobnafnb1kwi:seZu8xMTVvnxb5IrTtkO@bjyltygzpjcyqmru0gwg-mysql.services.clever-cloud.com/bjyltygzpjcyqmru0gwg'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object(Config)
 
 # Inicialización de extensiones
-db = SQLAlchemy(app)
+db.init_app(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-
-# Modelo de Usuario
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), nullable=False, unique=True)
-    password = db.Column(db.String(150), nullable=False)
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
 # Rutas
 @app.route('/')
 def home():
     return render_template('home.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        user = User.query.filter_by(username=username).first()
-        
-        if user and check_password_hash(user.password, password):
-            login_user(user)
-            flash('Has iniciado sesión con éxito!', 'success')
-            return redirect(url_for('home'))
-        else:
-            flash('Inicio de sesión fallido. Verifica tu nombre de usuario y contraseña.', 'danger')
-    
-    return render_template('login.html', form=form)
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        username = form.username.data
-        existing_user = User.query.filter_by(username=username).first()
-        if existing_user:
-            flash('El nombre de usuario ya está en uso. Elige otro.', 'danger')
+        dni = form.dni.data
+        existing_persona = Persona.query.filter_by(dni=dni).first()
+        if existing_persona:
+            flash('El DNI ya está registrado. Verifica la información ingresada.', 'danger')
         else:
-            password = generate_password_hash(form.password.data)
-            new_user = User(username=username, password=password)
+            new_persona = Persona(
+                nombre=form.nombre.data,
+                dni=form.dni.data,
+                email=form.email.data,
+                nacimiento=form.nacimiento.data,
+                rol=form.rol.data
+            )
             try:
-                db.session.add(new_user)
+                db.session.add(new_persona)
                 db.session.commit()
-                flash('¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.', 'success')
-                return redirect(url_for('login'))
+                flash('¡Registro creado exitosamente!', 'success')
+                return redirect(url_for('home'))
             except Exception as e:
                 db.session.rollback()
-                flash('Ocurrió un error al crear la cuenta.', 'danger')
+                flash('Ocurrió un error al crear el registro.', 'danger')
     
     return render_template('register.html', form=form)
 
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    flash('Has cerrado sesión.', 'success')
-    return redirect(url_for('home'))
+@app.route('/create_class', methods=['GET', 'POST'])
+@login_required  # Solo usuarios logueados pueden acceder
+def create_class():
+    form = ClassForm()
+    if form.validate_on_submit():
+        new_clase = Clase(
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            docente_id=current_user.id  # Asumiendo que current_user tiene el ID del docente
+        )
+        try:
+            db.session.add(new_clase)
+            db.session.commit()
+            flash('¡Clase creada exitosamente!', 'success')
+            return redirect(url_for('home'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Ocurrió un error al crear la clase.', 'danger')
+    
+    return render_template('create_class.html', form=form)
+
+@app.route('/classes')
+@login_required  # Solo usuarios logueados pueden acceder
+def classes():
+    clases = Clase.query.filter_by(docente_id=current_user.id).all()  # Obtener clases del docente actual
+    return render_template('classes.html', clases=clases)
 
 # Ejecutar la aplicación
 if __name__ == "__main__":
